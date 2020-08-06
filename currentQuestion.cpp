@@ -33,13 +33,14 @@ void backtrace(int size, size_t pos,vector<int>& nums, vector<int> temp)
     }
 }
 
-vector<vector<int>> subsets(vector<int>& nums) {
-    ans.push_back(vector<int>());// 空集是子集
+vector<vector<int>> subsets(vector<int> &nums)
+{
+    ans.push_back(vector<int>()); // 空集是子集
     int n = nums.size();
-    for(size_t i = 1; i <= n; i++)
+    for (size_t i = 1; i <= n; i++)
     {
-            vector<int> temp;
-        backtrace(i,0,nums,temp);
+        vector<int> temp;
+        backtrace(i, 0, nums, temp);
     }
     return ans;
 }

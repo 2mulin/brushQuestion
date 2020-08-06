@@ -1,0 +1,36 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+            "type": "shell",
+            "label": "g++", //任务的名字
+            "command": "D:\\ProgramData\\QT\\Tools\\mingw730_64\\bin\\g++.exe",
+            "args": [ // 注意下面的参数顺序不可以改，不然会出错
+                "'-Wall'", // 给出错误信息
+                "-g", // 加了这个才可以调试
+                "${file}", // 编译打开的当前文件
+                "-o", // 输出
+                "${fileDirname}\\${fileBasenameNoExtension}.exe" // 生成的执行文件的文件名设置
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+        },
+        {
+            "type": "shell",
+            "label": "gcc",
+            "command": "D:\\ProgramData\\QT\\Tools\\mingw730_64\\bin\\gcc.exe",
+            "args": [
+                "'-Wall'",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build"
+        }
+    ],
+}
