@@ -1,7 +1,7 @@
 /***********************************************************
  * @date 2020/6/7
  * @author redragon
- * @description: 动态规划 midden
+ * @description: 动态规划 medium
  * dp二维数组表示i到j的字串是不是回文
  * 状态转移方程：dp[i][j] = dp[i+1][j-1] + 2;
  * dp[i+1] == dp[j-1] 决定了 i到j是不是回文。

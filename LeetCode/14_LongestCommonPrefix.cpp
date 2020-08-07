@@ -1,7 +1,7 @@
 /**************************************************************
  * @date 2020/6/15
  * @author reddragon
- * @description: 简单题
+ * @description: easy题
  *************************************************************/
 #include <iostream>
 #include <string>

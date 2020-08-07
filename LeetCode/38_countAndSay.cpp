@@ -1,8 +1,9 @@
-/**
+/*********************************************************
  * @date 2020/5/22
  * @author reddragon
- * @description:leetcode第38题，外观数列，简单题
- */
+ * @description: easy
+ * leetcode第38题，外观数列.题
+ ********************************************************/
 #include <iostream>
 #include <vector>
 #include <map>

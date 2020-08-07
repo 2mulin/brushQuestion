@@ -1,3 +1,9 @@
+/***************************************************
+ * @date 2020/7/14
+ * @author reddragon
+ * @descripation:最大子序列 easy
+ * 时间复杂度：O(n)   空间复杂度：O(1)
+ ***************************************************/
 #include <iostream>
 #include <vector>
 using namespace std;
