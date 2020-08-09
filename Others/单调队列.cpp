@@ -49,46 +49,46 @@ vector<int> maxInWindows(const vector<int> &num, unsigned int size)
 }
 
 /*****************************************************************
-    暴力法：时间复杂度是O(n*k)n是数组长度，k是区间个数
-    vector<int> maxInWindows(const vector<int>& num, unsigned int size)
-    {
-        if(num.empty() || size == 1)
-            return num;
-        vector<int> ans;
-        if(num.size() < size || size == 0)
-            return ans;
-        for(size_t i = 0; i <= num.size() - size; i++)
-        {
-            int max = num[i];
-            for(int j = 1; j < size; j++)
-            {
-                if(num[i+j] > max)
-                    max = num[i + j];
-            }
-            ans.push_back(max);
-        }
+暴力法：时间复杂度是O(n*k)n是数组长度，k是区间个数
+vector<int> maxInWindows(const vector<int>& num, unsigned int size)
+{
+    if(num.empty() || size == 1)
+        return num;
+    vector<int> ans;
+    if(num.size() < size || size == 0)
         return ans;
-    }
-    // 比暴力还蠢的方法都给我过了。。。。。时间复杂度是O(n*n*logn)
-    vector<int> maxInWindows(const vector<int>& num, unsigned int size)
+    for(size_t i = 0; i <= num.size() - size; i++)
     {
-        if(num.empty() || size == 1)
-            return num;
-        vector<int> ans;
-        auto head = num.begin(),tail = num.begin();
-        for(int i = 0; i < size; i++)
-            tail++;
-        for(size_t i = size - 1; i < num.size(); i++)
+        int max = num[i];
+        for(int j = 1; j < size; j++)
         {
-            vector<int> temp(head,tail);
-            sort(temp.rbegin(),temp.rend());
-            ans.push_back(temp[0]);
-            head++;
-            tail++;
+            if(num[i+j] > max)
+                max = num[i + j];
         }
-        return ans;
+        ans.push_back(max);
     }
-    **********************************************************************/
+    return ans;
+}
+// 比暴力还蠢的方法都给我过了。。。。。时间复杂度是O(n*n*logn)
+vector<int> maxInWindows(const vector<int>& num, unsigned int size)
+{
+    if(num.empty() || size == 1)
+        return num;
+    vector<int> ans;
+    auto head = num.begin(),tail = num.begin();
+    for(int i = 0; i < size; i++)
+        tail++;
+    for(size_t i = size - 1; i < num.size(); i++)
+    {
+        vector<int> temp(head,tail);
+        sort(temp.rbegin(),temp.rend());
+        ans.push_back(temp[0]);
+        head++;
+        tail++;
+    }
+    return ans;
+}
+**********************************************************************/
 
 int main()
 {
