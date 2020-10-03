@@ -9,9 +9,10 @@ typedef unsigned long long ull;
 ull pow(ull a, ull b)
 {
     ull ans = 1;
+    // 主要是这里循环次数减少了，b每次右移一位，缩小两倍
     while (b)
     {
-        if (b & 1) // 位运算(二进制的同或运算)
+        if (b & 1) // 位运算(二进制的与运算)
         {
             ans *= a;
         }
@@ -23,6 +24,6 @@ ull pow(ull a, ull b)
 
 int main()
 {
-    cout << pow(3, 5);
+    cout << pow(3, 5) << endl;
     return 0;
 }
