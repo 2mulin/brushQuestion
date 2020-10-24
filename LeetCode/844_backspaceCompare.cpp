@@ -12,38 +12,61 @@
  ********************************************************************************************/
 #include <iostream>
 #include <vector>
-#include <algorithm>
 using namespace std;
 
-// 未完成
+// 说实话，挺复杂的，情况很多
 bool backspaceCompare(string S, string T)
 {
-    int i = S.size() - 1;
-    int j = T.size() - 1;
-    int Scount = 0;
-    int Tcount = 0;
-    while(i >= 0 && j >= 0)
+    int i = S.length() - 1, j = T.length() - 1;
+    int skipS = 0, skipT = 0;
+
+    while (i >= 0 || j >= 0)
     {
-        while(S[i] == '#')
+        while (i >= 0)
         {
-            Scount++;
-            i--;
+            if (S[i] == '#')
+            {
+                skipS++, i--;
+            }
+            else if (skipS > 0)
+            {
+                skipS--, i--;
+            }
+            else
+            {
+                break;
+            }
         }
-        i -= Scount;
-        Scount = 0;
-        while(T[j] == '#')
+        while (j >= 0)
         {
-            Tcount++;
-            j--;
+            if (T[j] == '#')
+            {
+                skipT++, j--;
+            }
+            else if (skipT > 0)
+            {
+                skipT--, j--;
+            }
+            else
+            {
+                break;
+            }
         }
-        i -= Tcount;
-        Tcount = 0;
-        if(i < 0 || j < 0)
-            return false;
-        if(S[i] != T[j])
-            return false;
-        i--;
-        j--;
+        if (i >= 0 && j >= 0)
+        {
+            if (S[i] != T[j])
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (i >= 0 || j >= 0)
+            {
+                return false;
+            }
+        }
+        i--, j--;
     }
     return true;
 }
