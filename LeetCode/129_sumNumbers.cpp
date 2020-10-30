@@ -27,7 +27,30 @@ struct TreeNode {
    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
-int ans;
+// 深度优先搜索
+int dfs(TreeNode *root, int num)
+{
+    num *= 10;
+    num += root->val;
+    if(root->left == nullptr && root->right == nullptr)
+        return num;
+    int ans = 0;
+    if(root->left)
+        ans += dfs(root->left, num);
+    if(root->right)
+        ans += dfs(root->right, num);
+    return ans;
+}
+
+int sumNumbers(TreeNode *root)
+{
+    if(root == nullptr)
+        return 0;
+    return dfs(root, 0);
+}
+/* 
+int ans = 0;
+
 int sumNumbers(TreeNode *root)
 {
     ans = 0;
@@ -59,7 +82,7 @@ int sumNumbers(TreeNode *root)
     }
     return ans;
 }
-
+ */
 int main()
 {
     TreeNode* root = new TreeNode(1);
