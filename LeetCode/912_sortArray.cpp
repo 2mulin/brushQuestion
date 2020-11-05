@@ -22,20 +22,26 @@
  * 此时整个序列最大值即为堆顶元素，我们将其与末尾元素交换，使末尾元素为最大值，
  * 然后再调整堆顶元素使得剩下的 n-1个元素仍为大根堆，再重复执行以上操作我们即能得到一个有序的序列。
  * 时间复杂度: O(nlogn)     空间复杂度：O(1)
+ * 
+ * 4.希尔排序shellSort
+ * 对插入排序的优化，最容易写的排序，效率也非常高
+ * 数组部分有序的情况下，效率更高,空间也少
+ * 时间复杂度：O(nlogn)     空间复杂度: O(1)
  *********************************************************************************************************/
 #include <iostream>
 #include <vector>
 #include <time.h>
 #include <algorithm>
 using namespace std;
-/* 快速排序
+
+// 快速排序
 void quicksort(vector<int> &arr, int b, int e)
 {
     if(b >= e)
         return;
     srand(time(nullptr));
     int pos = rand() % (e - b) + b;
-    cout << pos << endl;
+    // cout << pos << endl;//看看是不是随机的
     int low = b, hi = e;
     while(low < hi)
     {
@@ -64,9 +70,9 @@ void quicksort(vector<int> &arr, int b, int e)
     }
     quicksort(arr, b, pos - 1);
     quicksort(arr, pos + 1, e);
-} */
+} 
 
-/* 归并排序
+// 归并排序
 void meageSort(vector<int> & arr, int low, int hi)
 {
     if(hi <= low)
@@ -103,7 +109,7 @@ void meageSort(vector<int> & arr, int low, int hi)
     for(int i = low; i <= hi; i++)
         arr[i] = temp[k++];
     return;
-} */
+}
 
 // 堆排序
 void heapSort(vector<int> &arr)
@@ -156,11 +162,35 @@ void heapSort(vector<int> &arr)
     return;
 }
 
+// 希尔排序
+void shellSort(vector<int>& arr)
+{
+    int len = arr.size();
+    int h = 1;
+    while(h < len / 3)
+        h = h*3 + 1;
+    while(h >= 1)
+    {
+        for(int i = h; i < len; ++i)
+        {
+            // 检查i-h、i-2h、i-3h...是否有序
+            for(int j = i; j >= h && arr[j] < arr[j - h]; j -= h)
+            {
+                std::swap(arr[j], arr[j - h]);
+            }
+        }
+        // 缩小增量
+        h /= 3;
+    }
+    return;
+}
+
 void sortArray(vector<int> &arr)
 {
-    // quicksort(arr,0,arr.size() -1);
+    quicksort(arr,0,arr.size() -1);
     // meageSort(arr, 0, arr.size() - 1);
-    heapSort(arr);
+    // heapSort(arr);
+    // shellSort(arr);
 }
 
 int main()
