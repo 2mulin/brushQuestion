@@ -166,7 +166,7 @@ void heapSort(vector<int> &arr)
 void shellSort(vector<int>& arr)
 {
     int len = arr.size();
-    int h = 1;
+    int h = 1;// 每隔h个元素为一组
     while(h < len / 3)
         h = h*3 + 1;
     while(h >= 1)
@@ -174,6 +174,7 @@ void shellSort(vector<int>& arr)
         for(int i = h; i < len; ++i)
         {
             // 检查i-h、i-2h、i-3h...是否有序
+            // 插入到第一个小于当前值的位置，停止循环
             for(int j = i; j >= h && arr[j] < arr[j - h]; j -= h)
             {
                 std::swap(arr[j], arr[j - h]);
