@@ -166,7 +166,8 @@ void heapSort(vector<int> &arr)
 void shellSort(vector<int>& arr)
 {
     int len = arr.size();
-    int h = 1;// 每隔h个元素为一组
+    int h = 0;
+    // 每隔h个元素为一组
     while(h < len / 3)
         h = h*3 + 1;
     while(h >= 1)
