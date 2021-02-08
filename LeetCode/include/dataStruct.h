@@ -8,6 +8,15 @@
 #include <stdio.h>
 #include <sys/time.h>
 
+// 链表
+struct ListNode
+{
+	int val;
+	ListNode *next;
+	ListNode(int x) : val(x), next(NULL) {}
+};
+
+// 二叉树
 struct TreeNode
 {
 	int val;
@@ -22,7 +31,7 @@ struct TreeNode
 long long getTime()
 {
 	struct timeval tm;
-	if(gettimeofday(&tm, nullptr))
+	if (gettimeofday(&tm, nullptr))
 	{
 		perror("gettimeofday");
 		exit(-1);
