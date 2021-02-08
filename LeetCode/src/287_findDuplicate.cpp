@@ -1,6 +1,6 @@
 /********************************************************************************************
  * @author reddragon
- * @date 2021/2/7
+ * @date 2021/2/8
  * @brief medium 找到重复的数字
  * 
  * 最容易想到就是暴力, 使用两层for循环就可以看到重复的数字了
@@ -14,29 +14,58 @@
  * 那么可以使用当前数组直接存储, 把每个元素放回原位, 一个萝卜一个坑, 最后多出来的那个
  * 就是重复的元素
  * 时间复杂度: O(N)				空间复杂度: O(1)
+ * 缺点: 改变了数组的值, 副作用函数
  * 
- * 3. 二分
+ * 3. 二分查找
+ * 也是利用哈希的思想,由于只有一个重复的数, 所以保证数组中小于index的数, 再组成一个数组是具有单调性的.
+ * 二分查找比较复杂, 而且时间效率不高,需要结合抽屉原理节省空间
+ * 
+ * 4. 双指针
+ * 双指针非常巧妙, 大意就是说, 我们可以把数组当作图, 也就是index作为源点, nums[index]作为下一个节点
+ * 的index, 这里题目保证nums[index]的值在1-n之间, 所以保证了数组不会越界. 就是说这个数组装化成的图
+ * 一定有环, 但是如何找到环的起点呢?
+ * 首先找到利用快慢指针可以得到一个快慢指针的相遇点, 再创建一个新的指针指向0, 新指针和slow每次各走
+ * 一步, 最终相遇时, 就是圆环的起点.
+ * 具体查看 142.环状链表2 的题解
+ * 时间复杂度: O(N)				空间复杂度: O(1)
  ********************************************************************************************/
-#include <sys/time.h>
-#include <unistd.h>
-#include <stdio.h>
-
 #include <iostream>
 #include <vector>
 #include <unordered_set>
 #include <algorithm>
+
+#include <dataStruct.h>
 using namespace std;
 
-// 原地哈希
+// 双指针
 int findDuplicate(vector<int> &nums)
 {
-	// nums[0] 必然是不会被占住的, 因为元素值大小在0之上
-	while(nums[0] != nums[nums[0]])
-	{
-		swap(nums[0], nums[nums[0]]);
+	int slow = 0, fast = 0;
+	do{
+		slow = nums[slow];
+		fast = nums[nums[fast]];
 	}
-	return nums[0];
+	while(slow != fast);// 得到slow和fast相遇点
+	// 推导出数组成环的起始点
+	int newPtr = 0;
+	while(nums[newPtr] != nums[slow])
+	{
+		newPtr = nums[newPtr];
+		slow = nums[slow];
+	}
+	return nums[slow];
 }
+
+// 原地哈希
+// int findDuplicate(vector<int> &nums)
+// {
+// 	// nums[0] 必然是不会被占住的, 因为元素值大小在0之上
+// 	while (nums[0] != nums[nums[0]])
+// 	{
+// 		swap(nums[0], nums[nums[0]]);
+// 	}
+// 	return nums[0];
+// }
 
 // 哈希表
 // int findDuplicate(vector<int> &nums)
@@ -53,15 +82,11 @@ int findDuplicate(vector<int> &nums)
 
 int main()
 {
-	struct timeval tm1, tm2;
-	if (gettimeofday(&tm1, nullptr) == -1)
-		perror("gettimeofday");
-
-	vector<int> arr{1,3,4,2,2};
+	long long tm1 = getTime();
+	vector<int> arr{2,5,9,6,9,3,8,9,7,1};
 	cout << findDuplicate(arr) << endl;
 
-	if (gettimeofday(&tm2, nullptr) == -1)
-		perror("gettimeofday");
-	cout << "消耗时间: " << tm2.tv_usec - tm1.tv_usec << "微秒." << endl;
+	long long tm2 = getTime();
+	cout << "消耗时间: " << tm2 - tm1 << "毫秒" << endl;
 	return 0;
 }
