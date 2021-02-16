@@ -6,6 +6,7 @@
 #define DATASTRUCT__H
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/time.h>
 
 // 链表
@@ -36,7 +37,7 @@ long long getTime()
 		perror("gettimeofday");
 		exit(-1);
 	}
-	return static_cast<long long>(tm.tv_sec * 1000) + static_cast<long long>(tm.tv_usec / 1000);
+	return static_cast<long long>(tm.tv_sec) * 1000 + static_cast<long long>(tm.tv_usec) / 1000;
 }
 
 #endif
