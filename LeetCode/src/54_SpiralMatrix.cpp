@@ -13,40 +13,30 @@ using namespace std;
 vector<int> spiralOrder(vector<vector<int>> &matrix)
 {
     vector<int> ans;
-    int row = matrix.size();
-    if (row == 0)
+    if (matrix.size() == 0 || matrix[0].size() == 0)
         return ans;
+    int row = matrix.size();
     int col = matrix[0].size();
-    // 左上角(top,left), 右上角(top,right), 左下角(bottom,left), 右下角(bottom,right)
-    int top = 0, bottom = row - 1, left = 0, right = col - 1;
-    // 一个循环读掉最外层的一圈
-    while (left <= right && top <= bottom)
-    {
-        // 上。注意是读完整行
-        for (int i = left; i <= right; i++)
-            ans.push_back(matrix[top][i]);
-        // 右。注意是读完整列
-        for (int i = top + 1; i <= bottom; i++)
-            ans.push_back(matrix[i][right]);
 
-        if (left < right && top < bottom)
-        {
-            // 下，留最后一个
-            for (int i = right - 1; i > left; i--)
-            {
-                ans.push_back(matrix[bottom][i]);
-            }
-            // 左，留最后一个，最后一个读过了
-            for (int i = bottom; i > top; i--)
-            {
+    int top = 0, left = 0;                 // 左上坐标
+    int button = row - 1, right = col - 1; // 右下坐标
+    while (top <= button && left <= right)
+    {
+        for (int i = left; i <= right; ++i)
+            ans.push_back(matrix[top][i]);
+        for (int i = top + 1; i <= button; ++i)
+            ans.push_back(matrix[i][right]);
+        if(left < right && top < button)
+        {// 防止矩阵只有一行或一列的时候, 重复访问
+            for (int i = right - 1; i > left; --i)
+                ans.push_back(matrix[button][i]);
+            for (int i = button; i > top; --i)
                 ans.push_back(matrix[i][left]);
-            }
-            // 1圈之后，二维数组变小了
         }
+        top++;
+        button--;
         left++;
         right--;
-        top++;
-        bottom--;
     }
     return ans;
 }
