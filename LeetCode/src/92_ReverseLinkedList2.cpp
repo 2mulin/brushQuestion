@@ -2,23 +2,49 @@
  * @author reddragon
  * @date 2020/8/13
  * @brief medium 反转链表2
- * 官方题解是递归和一个非递归
- * 但是我的这种方法也可以：双指针
- * 一个指针指向n前面的一个元素，一个指针指向第n个元素，一个指针指向第m个元素
- * 每次都把n放到m后面去，最终也可以
- * 
+ * 1.双指针
+ * 这种题目看一眼就知道思路, 就是指针换来换去, 所以特别要注意指针的操作
+ * 难点就是指针的操作, 逻辑请不清晰.
  * 记住做这种题目，最好使用画图的方式帮助理解，指针的操作也不容易错
+ * 时间复杂度: O(N)     空间复杂度: O(1)
 **********************************************************************/
 
 #include <iostream>
 using namespace std;
 
-struct ListNode {
+struct ListNode
+{
     int val;
     ListNode *next;
     ListNode(int x) : val(x), next(NULL) {}
 };
 
+ListNode *reverseBetween(ListNode *head, int left, int right)
+{
+    ListNode *dummyNode = new ListNode(-1);
+    dummyNode->next = head;
+    ListNode *pre = dummyNode;
+
+    for (int i = 0; i < left - 1; ++i)
+    {
+        pre = pre->next;
+    }
+    ListNode *cur = pre->next;
+    ListNode *next = nullptr;
+
+    for (int i = 0; i < right - left; ++i)
+    {
+        next = cur->next;
+        cur->next = next->next;
+
+        next->next = pre->next;
+        pre->next = next;
+    }
+    // head可能被反转了, 所以需要一个dummyNode一直呆在第一位
+    return dummyNode->next;
+}
+
+/* 一刷
 ListNode *reverseBetween(ListNode *head, int m, int n)
 {
     if (!head || m == n)
@@ -47,7 +73,7 @@ ListNode *reverseBetween(ListNode *head, int m, int n)
     // 这里没有释放node结点，leetcode会报错
     // head = node-next;delete node;
     return node->next;
-}
+} */
 
 int main()
 {
