@@ -1,51 +1,55 @@
-/**********************************************
+/***********************************************************************
  * @author reddragon
  * @date 2020/7/28
  * @brief 矩阵置0 medium
  * 主要是题目限制空间复杂度为O(1)
- **********************************************/
+ * 
+ * 1.使用标记数组
+ * 使用两个set, 分别记录下来需要变成0的行和列
+ * 最后统一变成0
+ * 时间复杂度: O(m*n)       空间复杂度: O(m+n)
+ * 
+ * 2.原地
+ * 直接使用矩阵的第一行和第一列做标记. 如n行中有0
+ * 那么标记matrix[n][0] = 0; n列中有0, 标记matrix[0][n] = 0;
+ * 但是这里需要注意的是, 如果第一行或者第一列也有0
+ * 我们不能使用matrix[0][0], 有歧义. 所以单独增加两个
+ * 变量分别表示第一行和第一列是否有0
+ * 时间复杂度: O(m*n)       空间复杂度: O(1)
+ ************************************************************************/
 #include <iostream>
 #include <vector>
-#include <string>
-#include <memory>
+#include <set>
 using namespace std;
 
-// 记录下来会变成全0的行和列。时间O(m*n) 空间O(m+n)
+// 使用两个set分别存放当前需要变成0的row和col. 最后统一变成0
+// 时间复杂度: O(m*n)       空间复杂度: O(m+n)
 void setZeroes(vector<vector<int>> &matrix)
 {
-    int row = matrix.size();
-    if (row == 0)
-        return;
-    int col = matrix[0].size();
-    // 记录row或者col为全0
-    vector<bool> rows(row, false);
-    vector<bool> cols(col, false);
-    for (int i = 0; i < row; i++)
+    set<int> rowflags;
+    set<int> colflags;
+    for (int i = 0; i < matrix.size(); ++i)
     {
-        for (int j = 0; j < col; j++)
+        for (int j = 0; j < matrix[0].size(); ++j)
         {
-            if (!matrix[i][j])
+            if (matrix[i][j] == 0)
             {
-                rows[i] = true;
-                cols[j] = true;
+                rowflags.insert(i);
+                colflags.insert(j);
             }
         }
     }
-    for (int i = 0; i < row; i++)
+    int row = matrix.size();
+    int col = matrix[0].size();
+    for (auto num : rowflags)
     {
-        if (rows[i])
-        {
-            for (int j = 0; j < col; j++)
-                matrix[i][j] = 0;
-        }
+        for (int i = 0; i < col; ++i)
+            matrix[num][i] = 0;
     }
-    for (int i = 0; i < col; i++)
+    for (auto num : colflags)
     {
-        if (cols[i])
-        {
-            for (int j = 0; j < row; j++)
-                matrix[j][i] = 0;
-        }
+        for (int i = 0; i < row; ++i)
+            matrix[i][num] = 0;
     }
     return;
 }
@@ -92,5 +96,13 @@ void setZeroes(vector<vector<int>> &matrix)
 
 int main()
 {
+    vector<vector<int>> vec{{1,1,1}, {1,0,1}, {1,1,1}};
+    setZeroes(vec);
+    for(auto arr : vec)
+    {
+        for(auto it : arr)
+            cout << it << '\t';
+        cout << endl;
+    }
     return 0;
 }
