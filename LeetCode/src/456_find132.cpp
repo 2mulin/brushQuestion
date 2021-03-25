@@ -13,7 +13,8 @@
  * 时间复杂度: O(n^2)               空间复杂度: O(1)
  * 
  * 3. 单调栈
- * 从后往前维护一个单调栈, 只要
+ * 算了, 这个单调栈看不懂
+ * 时间复杂度: O(n)                 空间复杂度: O(n)
 *********************************************************************************************/
 #include <iostream>
 #include <vector>
@@ -22,8 +23,30 @@
 #include <climits>
 using namespace std;
 
-// 枚举b
 bool find132pattern(vector<int> &nums)
+{
+    int n = nums.size();
+    stack<int> st;// 单调栈, 存放b
+    st.push(nums[n - 1]);
+    int max_k = INT_MIN;// 初始化为最小值 表示c
+
+    for(int i = n - 2; i >= 0; --i)
+    {
+        if(nums[i] < max_k)// nums[i]表示a, 判断a和c的关系
+            return true;
+        while(!st.empty() && nums[i] > st.top())
+        {
+            max_k = st.top();// 更新阈值
+            st.pop();
+        }
+        if(nums[i] > max_k)
+            st.push(nums[i]);
+    }
+    return false;
+}
+
+// 枚举b
+/* bool find132pattern(vector<int> &nums)
 {
     auto it = nums.begin();
     while(it != nums.end())
@@ -44,7 +67,7 @@ bool find132pattern(vector<int> &nums)
         ++it;
     }
     return false;
-}
+} */
 
 /*  暴力
 bool find132pattern(vector<int> &nums)
