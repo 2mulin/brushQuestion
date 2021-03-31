@@ -2,56 +2,47 @@
  * @author reddragon
  * @date 2020/8/13
  * @brief medium 子集II
- * 穷举：可以再草稿纸上画出解空间树。很清晰，每一个起点就是一个新的解空间树
- * 就是和平常生活中做排列使用的方法一个道理
+ * 1.枚举
  * 每次碰到一个数就是两种选择，要或者不要，可以写成尾递归。简单易懂，看代码
- * 难点要去重。几行也可以解决问题
- * 这种形式的递归是尾递归吧（不确定）
+ * 难点要去重. 官方题解的去重很巧妙, 也很高效
+ * 时间复杂度: O(n*2^n)         空间复杂度: O(n)
  *******************************************************************************/
 #include <iostream>
 #include <algorithm>
 #include <vector>
 using namespace std;
 
-void backTrace(vector<vector<int>> &ans, size_t pos, const vector<int> &nums, vector<int> tmp)
+vector<int> curr;
+vector<vector<int>> ret;
+
+// 枚举： 选或者不选
+void dfs(const vector<int> &nums, int idx, bool choosePre)
 {
-    if (pos >= nums.size())
+    // 递归基
+    if (idx >= nums.size())
     {
-        ans.emplace_back(tmp);
+        ret.push_back(curr);
         return;
     }
-    if (!tmp.empty() && pos - 1 >= 0)
-        if (tmp.back() == nums[pos] && nums[pos - 1] == nums[pos])
-        { // 去重操作，当pos的数字与pos - 1重复时，pos的数字一定要选。不然...nums[pos]和...nums[pos - 1]重复
-            tmp.emplace_back(nums[pos]);
-            backTrace(ans, pos + 1, nums, tmp);
-            return;
-        }
-    // 两种选择，不要该数字
-    backTrace(ans, pos + 1, nums, tmp);
-    // 或者要该数字。
-    tmp.emplace_back(nums[pos]);
-    backTrace(ans, pos + 1, nums, tmp);
-    return;
+
+    dfs(nums, idx + 1, false); // 不选
+    if (!choosePre && idx > 0 && nums[idx - 1] == nums[idx])
+    {
+        // 加入序列 1, 1     可以避免1,null   null,1重复
+        return; // 去重, !choosePre && nums[idx - 1] == nums[idx]的话说明这个数已经枚举过了
+    }
+    // 选
+    curr.push_back(nums[idx]);
+    dfs(nums, idx + 1, true);
+    curr.pop_back();
 }
 
 vector<vector<int>> subsetsWithDup(vector<int> &nums)
 {
-    vector<vector<int>> ans;
-    if (nums.empty())
-        return ans;
-
-    sort(nums.begin(), nums.end());
-
-    for (size_t i = 0; i < nums.size(); i++)
-    {
-        vector<int> tmp;
-        tmp.emplace_back(nums[i]);
-        backTrace(ans, i + 1, nums, tmp);
-    }
-    // 加上空集
-    ans.emplace_back(vector<int>());
-    return ans;
+    // 这是去重的基本前提
+    sort(nums.begin(), nums.end()); 
+    dfs(nums, 0, false);
+    return ret;
 }
 
 int main()
