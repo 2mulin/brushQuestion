@@ -1,9 +1,10 @@
 /*******************************************************************************
  * @author reddragon
- * @date 2020/8/11
+ * @date 2021/4/5
  * @brief easy 有序数组合并
+ * 1. 双指针
  * 最先想到的是归并排序的合并方法，但是需要用到O(N+M)的辅助空间
- * 然后发现这里的nums1的大小就是M+N，所以可以利用，只要从前往后，每次把最大的放到
+ * 然后发现这里的nums1的大小就是M+N，所以可以利用，只要从后往前遍历，每次把最大的放到
  * nums1最后就可以了
  * 时间: O(M+N)     空间: O(1)
  *******************************************************************************/
@@ -13,19 +14,18 @@ using namespace std;
 
 void merge(vector<int> &nums1, int m, vector<int> &nums2, int n)
 {
-    int p1 = m - 1;
-    int p2 = n - 1;
-    int pos = m + n - 1;
-    while(p1 >= 0 && p2 >= 0)
+    nums1.resize(m + n);
+    int tail = m + n - 1;
+    int i = m - 1, j = n - 1;
+    while (i >= 0 && j >= 0)
     {
-        if(nums1[p1] > nums2[p2])
-            nums1[pos--] = nums1[p1--];
+        if (nums1[i] >= nums2[j])
+            nums1[tail--] = nums1[i--];
         else
-            nums1[pos--] = nums2[p2--];
+            nums1[tail--] = nums2[j--];
     }
-    while(p2 >= 0)
-        nums1[pos--] = nums2[p2--];
-    return;
+    while (j >= 0)
+        nums1[tail--] = nums2[j--];
 }
 
 // 最简单的思路，归并排序合并的思路。时间：O(N) 空间：O(N)
@@ -46,7 +46,7 @@ void merge(vector<int> &nums1, int m, vector<int> &nums2, int n)
 //         ans[i++] = nums1[p1++];
 //     while(p2 < n)
 //         ans[i++] = nums2[p2++];
-    
+
 //     nums1 = ans;
 //     return;
 // }
@@ -57,7 +57,7 @@ int main()
     vector<int> nums2{2, 5, 6};
     int m = 3, n = 3;
     merge(nums1, m, nums2, n);
-    for(auto i : nums1)
+    for (auto i : nums1)
         cout << i << '\t';
     return 0;
 }
