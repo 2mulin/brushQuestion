@@ -1,63 +1,42 @@
 /***************************************************************************
  * @date 2020/7/12
  * @author reddragon
- * @description: hard 第46题:求全排列
- * 1. 暴力回溯
- * 回溯列出所有的可能，再排序
- * 时间复杂度：O(n*n!)  空间复杂度：O(n)
+ * @description: medium 全排列
  * 
- * 2. stl
- * 好用的一批
+ * 1. 暴力回溯
+ * 回溯, 每次确定nums[i]的元素是谁
+ * 时间复杂度：O(n*n!)          空间复杂度：O(n)
+ * 
+ * 2. STL
+ * STL算法中有一个next_premutation()函数, 它可以用来求全排列
+ * 时间复杂度：O(n*n!)          空间复杂度：O(n)
  ****************************************************************************/
 #include <iostream>
 #include <vector>
-#include <string>
-#include <queue>
-#include <map>
 #include <algorithm>
-#include <cstring>
 using namespace std;
 
 vector<vector<int>> ans;
 
-void pre_son(const vector<int> &nums, vector<bool> &isVisit, vector<int> &temp, int index)
+void backTrack(vector<int> &nums, int index)
 {
     if (index == nums.size())
     {
-        ans.push_back(temp);
+        ans.push_back(nums);
         return;
     }
-    for (int i = 0; i < isVisit.size(); i++)
+
+    for (int i = index; i < nums.size(); ++i)
     {
-        if (isVisit[i])
-            continue;
-        else
-        {
-            isVisit[i] = true;
-            temp[index++] = nums[i];
-            pre_son(nums, isVisit, temp, index);
-            isVisit[i] = false;
-            index--;
-        }
+        swap(nums[i], nums[index]);
+        backTrack(nums, index + 1);
+        swap(nums[i], nums[index]);
     }
 }
 
 vector<vector<int>> permute(vector<int> &nums)
 {
-    if (nums.empty())
-        return ans;
-    int n = nums.size();
-    // 标记数组
-    vector<bool> isVisit(n, false);
-    for (size_t i = 0; i < n; i++)
-    {
-        vector<int> temp(n, 0);
-        isVisit[i] = true;
-        temp[0] = nums[i];
-        pre_son(nums, isVisit, temp, 1);
-        isVisit[i] = false;
-    }
-    sort(ans.begin(), ans.end());
+    backTrack(nums, 0);
     return ans;
 }
 
@@ -68,11 +47,10 @@ vector<vector<int>> permute(vector<int> &nums)
     if (nums.empty())
         return ans;
     sort(nums.begin(), nums.end());
-    ans.push_back(nums);
-    while (next_permutation(nums.begin(), nums.end()))
+    do
     {
         ans.push_back(nums);
-    }
+    }while (next_permutation(nums.begin(), nums.end()))
     return ans;
 }
 */
