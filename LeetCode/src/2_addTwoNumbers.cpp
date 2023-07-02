@@ -1,18 +1,22 @@
-/********************************************************************************************
- * @author reddragon
- * @date 2020/10/4
- * @brief medium 两数之和
+/**
+ * @date 2023/7/2
+ * @author 2mu
+ * @brief medium 两数相加
+ *
+ * 1. 模拟
+ * 题目实际上看起来就是要求使用链表模拟数字加法; 链表每个节点只表示一位数字, 需要考虑向上进位
+ * 恰巧数字是逆序排放, 只要遍历一遍, 按照进位规则将所有链表元素加起来就可以;
  * 
- * 1.模拟
- * 模拟一下加法。题目给的条件非常好。链表每一位上的数直接加就好了。
- * 因为链表是倒序存放的，并且每一位都是一位数。
- * 时间复杂度：O(max(m,n))  空间复杂度：O(max(m,n))
- ********************************************************************************************/
+ * 时间复杂度: O(n)
+ * 空间复杂度: O(m)
+ */
+
 #include <iostream>
+#include <vector>
+
 using namespace std;
 
-struct ListNode
-{
+struct ListNode {
     int val;
     ListNode *next;
     ListNode() : val(0), next(nullptr) {}
@@ -20,36 +24,46 @@ struct ListNode
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
+// 返回ListNode内存没有释放, 不过刷题不考虑这些, 也不太好考虑...
 ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
 {
-    ListNode *ans = new ListNode(0); // 头结点
-    ListNode *p = ans;
+    if(l1 == NULL)
+        return l2;
+    if(l2 == NULL)
+        return l1;
 
-    int flag = 0; // 表示是否有进位
-    while (l1 || l2 || flag)
+    ListNode* head = new ListNode(-1), *p1 = l1, *p2 = l2;
+    ListNode* p3 = head;
+    int num = 0; // 是否需要进位?
+    while(p1 || p2)
     {
-        int num = 0;
-        num += flag;
-        flag = 0;
-        if (l1)
+        if(p1 && p2)
         {
-            num += l1->val;
-            l1 = l1->next;
+            int sum = p1->val + p2->val + num;
+            p3->next = new ListNode(sum % 10);
+            num = sum / 10;
+            p1 = p1->next;
+            p2 = p2->next;
         }
-        if (l2)
+        else if(p1)
         {
-            num += l2->val;
-            l2 = l2->next;
+            int sum = p1->val + num;
+            p3->next = new ListNode(sum % 10);
+            num = sum / 10;
+            p1 = p1->next;
         }
-        if (num > 9)
+        else if(p2)
         {
-            flag = 1;
-            num -= 10;
+            int sum = p2->val + num;
+            p3->next = new ListNode(sum % 10);
+            num = sum / 10;
+            p2 = p2->next;
         }
-        p->next = new ListNode(num);
-        p = p->next;
+        p3 = p3->next;
     }
-    return ans->next;
+    if(num)
+        p3->next = new ListNode(num);
+    return head->next;
 }
 
 int main()
