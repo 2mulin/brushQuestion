@@ -1,14 +1,23 @@
-/*************************************************
- * @date 2020/6/15
- * @author reddragon
- * @description: medium，四数之和
- * 还是双指针的解题思路，难点是避免重复
- ************************************************/
+/**
+ * @date 2023/7/15
+ * @author 2mu
+ * @brief medium 四数之和
+ * 
+ * 1. 排序 + 双指针
+ * 还是双指针的解题思路，难点是避免重复, 题解的答案避免排序双指针重复比较好;
+ * 而且还有剪枝, 我这里没写全剪枝方法;
+ * 
+ * 时间复杂度: O(n*n*n*)
+ * 空间复杂度: O(n)
+ */
+
 #include <iostream>
 #include <vector>
-#include <cstring>
 #include <algorithm>
+
 using namespace std;
+
+
 vector<vector<int>> fourSum(vector<int> &nums, int target)
 {
     vector<vector<int>> ans;
@@ -16,45 +25,46 @@ vector<vector<int>> fourSum(vector<int> &nums, int target)
         return ans;
 
     sort(nums.begin(), nums.end());
-    int one, two, three, four;
-    bool isExist = false;
     for (int i = 0; i < nums.size() - 3; i++)
     {
+        if((long long)nums[i] + nums[i+1] + nums[i+2] + nums[i+3] > target)
+            break; // 剪枝, 后面都不可能有满足条件的答案了
         for (int j = i + 1; j < nums.size() - 2; j++)
         {
+            if((long long)nums[i] + nums[j] + nums[j+1] + nums[j+2] > target)
+                break;
+            
+            // 双指针; 这里不能用哈希表, 因为建立一个哈希表的时间, 已经可以完成
             int low = j + 1, high = nums.size() - 1;
             while (low < high)
             {
-                int sum = nums[i] + nums[j] + nums[low] + nums[high];
+                long long sum = nums[i] + nums[j] + nums[low] + nums[high];
                 if (sum < target)
-                    low++;
+                    ++low;
                 else if (sum > target)
-                    high--;
+                    --high;
                 else
                 {
+                    ans.push_back({nums[i], nums[j], nums[low], nums[high]});
                     // 去重
-                    if (!isExist || one != nums[i] || two != nums[j] || three != nums[low] || four != nums[high])
-                    {
-                        one = nums[i];
-                        two = nums[j];
-                        three = nums[low];
-                        four = nums[high];
-                        ans.push_back(vector<int>{nums[i], nums[j], nums[low], nums[high]});
-                        isExist = true;
-                    }
-                    low++;
-                    high--;
+                    while(low < high && nums[low] == nums[low+1])
+                        ++low;
+                    ++low;
+                    while(low < high && nums[high] == nums[high-1])
+                        --high;
+                    --high;
                 }
             }
             while (j < nums.size() - 2 && nums[j] == nums[j + 1])
-                j++;
+                ++j;
         }
         while (i < nums.size() - 3 && nums[i] == nums[i + 1])
-            i++;
+            ++i;
     }
 
     return ans;
 }
+
 
 int main()
 {
