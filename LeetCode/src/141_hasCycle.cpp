@@ -1,19 +1,19 @@
-/********************************************************************************************
- * @author reddragon
- * @date 2020/10/9
- * @brief easy 链表是否有环
+/**
+ * @date 2023/7/29
+ * @author 2mu
+ * @brief easy 环形链表
  * 
- * 1. 哈希表
- * 把所有访问过的链表结点放到哈希表中，如果重复了，说明有环。
- * 时间复杂度：O(N)         空间复杂度：O(N)
+ * 1. 快慢指针
+ * 使用快慢指针即可; 慢指针每次往前移动一个元素, 快指针每次往前移动两个元素;
+ * 如果该链表有环, 那么最终两个指针会在环中相遇;
+ * 如果无环, 那么链表尾部是NULL, 快指针会先一步到达链表尾部;
  * 
- * 2. 快慢指针
- * 一个指针一次走一步，一个一次走两步，如果有环，最终一定会相遇
- * 时间复杂度：O(N)         空间复杂度：O(1)
- ********************************************************************************************/
+ * 时间复杂度: O(n)
+ * 空间复杂度: O(1)
+ */
+
 #include <iostream>
-#include <string>
-#include <unordered_set>
+
 using namespace std;
 
 struct ListNode {
@@ -22,37 +22,23 @@ struct ListNode {
     ListNode(int x) : val(x), next(NULL) {}
 };
 
-// 哈希表
 bool hasCycle(ListNode *head)
 {
-    unordered_set<ListNode *> seen;
-    while (head != nullptr)
+    if(head == nullptr)
+        return false;
+    ListNode* fast = head->next, *slow = head;
+    while(fast != slow)
     {
-        if (seen.count(head))
-        {
-            return true;
-        }
-        seen.insert(head);
-        head = head->next;
+        // 这里还可以优化, 不需要判断slow指针, 因为如果不是环形链表, 则一定是 fast 指针先到尾部
+        if(fast == nullptr || fast->next == nullptr || slow == nullptr)
+            return false;
+        fast = fast->next;
+        fast = fast->next;
+        slow = slow->next;
     }
-    return false;
+    return true;
 }
 
-// 快慢指针
-bool hasCycle(ListNode *head)
-{
-    if (head == nullptr)
-        return false;
-    ListNode *p1 = head, *p2 = head->next;
-    while (p1 && p2 && p2->next)
-    {
-        if (p1 == p2)
-            return true;
-        p1 = p1->next;
-        p2 = p2->next->next;
-    }
-    return false;
-}
 
 int main()
 {
