@@ -14,6 +14,14 @@ LeetCode上的[剑指Offer（第2版）](https://leetcode.cn/problem-list/xb9nqh
 
 LeetCode上的[剑指Offer（专项突击版）](https://leetcode.cn/problem-list/e8X3pBZi/)
 
+### LCP
+
+Leetcode杯竞赛合集; **题库**主页, 选择全部题目, 筛选条件选 力扣杯-竞赛合集: <https://leetcode.cn/problemset/all/?listId=7cyqwuv&page=1>
+
+### SQL
+
+**题库**主页, 选择数据库; <https://leetcode.cn/problemset/database/>
+
 ## 浙大数据结构
 
 在中国大学MOOC上看浙江大学开放式课程时做的的一些课后题。好像是PAT原题。
