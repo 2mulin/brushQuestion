@@ -1,83 +1,61 @@
-/********************************************************************************************
- * @author ling
- * @date 2021/4/16
- * @brief medium 打家劫舍2
+/**
+ * @date 2023/9/17
+ * @author 2mu
+ * @brief medium 打家劫舍II
+ *
+ * 1. dp
+ * 印象中已经做过这一题了, 再做一次; 要求是不能偷两个相邻的房间;
+ * 假设第i个房间的现金数是 nums[i], 假设nums数组长度为len, 
+ * 再设置dp数组, dp[i]表示nums长度为i+1时, 最多能偷到的现金数;
+ * 则状态转移方程:
+ *      则 i = 0 时, dp[i] = nums[0]
+ *         i = 1 时, dp[i] = max(nums[0], nums[1])
+ *         i > 1 时, dp[i] = max(dp[i - 1],  dp[i - 2] + nums[i])
  * 
- * 1. 枚举
- * 最简单的思路，就是说注意细节，比如说由于是循环的数组，所以在检测0号元素的左侧和右侧的时候
- * 需要注意数组是否越界，越界如何调整。
- * 时间复杂度： O(2^n)      空间复杂读：O(n)和栈递归栈深度相关
+ * 由于有环, 以上方案用不了, 那能不能破解这个环? 可以的, 先忽视最后一个房间, 做一次dp; 然后忽视第一个房间, 做一次dp;
+ * 然后两次dp中选取最大值, 就可以解决了;
  * 
- * 2. dp
- * 这一题比较难的地方就是数组首尾相连，首部和尾部不能同时选择。
- * 所以说，就是两种情况，首部和尾部，必定有一个没选。那么我们可以假设
- * 首部或者尾部有一个没有选择，那么接下来的处理不就是和打家劫舍1类似了吗。
- * 设dp[i]
- * 时间复杂度： O(n)        空间复杂度：O(n)
- ********************************************************************************************/
+ * 时间复杂度: O(n)
+ * 空间复杂度: O(n)
+ */
+
 #include <iostream>
-#include <algorithm>
 #include <vector>
-#include <climits>
+
 using namespace std;
 
-int robRange(vector<int> nums, int start, int end)
-{
-    vector<int> dp(end + 1, 0);
-    dp[start] = nums[start];
-    dp[start + 1] = max(nums[start], nums[start + 1]);
-    for(int i = start + 2; i <= end; ++i)
-    {// 这里可能有疑问：怎么知道dp[i - 1]里面就一定选了nums[i - 1]呢？如果dp[i - 1]里面没有选择nums[i - 1],那么是不是应该是
-    // 还要判断dp[i - 1] + nums[i]的值呢？实际上可以dp[i - 1]选了nums[i-1]没有并不重要，因为dp[i-1]要是没选，那他和dp[i - 2]
-    // 的值就是一样的。选了他就要大一些。
-        dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]);
-    }
-    return dp[end];
-}
-
 int rob(vector<int> &nums)
 {
-    int sz = nums.size();
-    if(sz == 1)
+    int len = nums.size();
+    if(len == 1)
         return nums[0];
-    else if(sz == 2)
+    if(len == 2)
         return max(nums[0], nums[1]);
-    else
-        // 先确定了一个必不选
-        return max(robRange(nums, 0, sz - 2), robRange(nums, 1, sz - 1));
-}
-
-/* 
-// 枚举  flag为true表示上一个选了
-int backTrace(const vector<int> &nums, int curr, vector<int> flag)
-{
-    int sz = nums.size();
-    if (curr >= sz)
-        return 0;
-    // 不选
-    int ret = backTrace(nums, curr + 1, flag);
-    // 选
-    int left = (sz + curr - 1) % sz;
-    int right = (curr + 1) % sz;
-    cout << left << ' ' << right << endl;
-    if (!flag[left] && !flag[right])
+    std::vector<int> dp(len);
+    dp[0] = nums[0];
+    dp[1] = max(nums[0], nums[1]);
+    for(int i = 2; i < len - 1; ++i)
     {
-        flag[curr] = true;
-        ret = max(ret, backTrace(nums, curr + 2, flag) + nums[curr]);
+        dp[i] = std::max(dp[i - 1], dp[i - 2] + nums[i]);
     }
-    return ret;
+    int ans = dp[len - 2];
+    // 再做一次dp, 这次不考虑nums[0]
+    
+    dp[1] = nums[1];
+    dp[2] = max(nums[1], nums[2]);
+    for(int i = 3; i < len; ++i)
+    {
+        dp[i] = std::max(dp[i - 1], dp[i - 2] + nums[i]);
+    }
+    ans = std::max(dp[len - 1], ans);
+    return ans;
 }
-
-int rob(vector<int> &nums)
-{
-    int sz = nums.size();
-    vector<int> flag(sz, 0);
-    return backTrace(nums, 0, flag);
-} */
 
 int main()
 {
-    vector<int> arr{2,3,2};
-    cout << rob(arr) << endl;
+    std::vector<int> arr{1, 2, 3};
+    std::cout << rob(arr) << std::endl;
+    arr = {2, 3, 2};
+    std::cout << rob(arr) << std::endl;
     return 0;
 }
