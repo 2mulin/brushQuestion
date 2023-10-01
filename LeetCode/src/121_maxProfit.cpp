@@ -1,10 +1,18 @@
-/*******************************************************************************************
- * @author reddragon
- * @date 2020/9/20
- * @brief easy 卖卖股票的最佳时机
- * 1.暴力枚举
- * 选定买入的时候，再选定卖出的时候，枚举出所有的可能性
- * 时间复杂度：O(N*N)      空间复杂度：O(N)
+/**
+ * @date 2022/10/1
+ * @author 2mu
+ * @brief easy 买卖股票的最佳时机
+ * 
+ * 1. 数组
+ * 因为实际上**限制买进,卖出股票次数只有一次**; 所以这是简单题;
+ * 很显然, 只需要在股票最低点买入, 然后在最高点卖出即可; 
+ * 
+ * 解决方法: 使用两个变量分别记录出现过的数组最小值位置minPos;
+ * 如果当前位置i, prices[i] - prices[minPos]的值大于0; 这就是一种买入卖出方案;
+ * 再有一个ans变量, 记录prices[i] - prices[minPos]的最大值; 即记录利润最高的方案
+ *
+ * 时间复杂度：O(n)
+ * 空间复杂度：O(1)
  * 
  * 2.单调栈
  * 从后往前遍历，得到一个单调递增序列的索引，如7 1 3 2 6，栈中由上到下是0，4
@@ -13,85 +21,33 @@
  * 就是上面的意思
  * 表示的意思就是说prices[i]到prices[s.top()]能看到的最大值就是prices[s.top()];
  * 当i大与s.top时，调用s.pop()
- * 时间复杂度O(N)        空间复杂度: O(N)
  * 
- * 3.一次遍历
- * 把上面的单调找反过来就对了
- * 7 1 3 2 6
- * 7 1 1 1 1
- * 记录最低点
-*******************************************************************************************/
+ * 时间复杂度: O(N)
+ * 空间复杂度: O(N)
+ */
+
 #include <iostream>
 #include <vector>
-#include <climits>
+
 using namespace std;
 
-// 一次遍历
-int maxProfit(vector<int> &prices)
+int maxProfit(vector<int>& prices)
 {
-    int ans = 0;
-    int minPrice = INT_MAX;
-    for(int i = 0; i < prices.size(); i++)
+    int ans = 0, minPos = 0;
+    for(int i = 1; i < prices.size(); ++i)
     {
-        if(minPrice > prices[i])
-            minPrice = prices[i];
-        else
+        if(prices[minPos] > prices[i])
         {
-            int profit = prices[i] - minPrice;
-            if(profit > ans)
-                ans = profit;
+            minPos = i;
         }
+        ans = std::max(ans, prices[i] - prices[minPos]);
     }
     return ans;
 }
 
-/* 单调栈
-int maxProfit(vector<int> &prices)
-{
-    stack<int> st;
-    for(int i = prices.size() - 1; i >= 0; i--)
-    {
-        if(st.empty() || prices[i] > prices[st.top()])
-        {
-            st.push(i);
-        }
-    }
-
-    int ans = 0;
-    for(int i = 0; i < prices.size(); i++)
-    {
-        if(st.top() < i)
-            st.pop();
-        if(prices[st.top()] - prices[i] > ans)
-            ans = prices[st.top()] - prices[i];
-    }
-    return ans;
-} */
-
-/* 暴力枚举
-int maxProfit(vector<int> &prices)
-{
-    if (prices.empty())
-        return 0;
-    // 暴力
-    int ans = 0;
-    for (int i = 0; i < prices.size() - 1; i++)
-    { // i是买入的时候
-        int max = prices[i];
-        for (int j = i + 1; j < prices.size(); j++)
-        { // j是卖出的时候
-            if (prices[j] > max)
-                max = prices[j];
-        }
-        if (max - prices[i] > ans)
-            ans = max - prices[i];
-    }
-    return ans;
-} */
-
 int main()
 {
-    vector<int> arr{7,1,5,3,6,4};
-    cout << maxProfit(arr) << endl;
+    std::vector<int> prices{7, 1, 5, 3, 6, 4};
+    std::cout << maxProfit(prices) << std::endl;
     return 0;
 }
