@@ -1,19 +1,29 @@
-/********************************************************************************************
- * @author reddragon
- * @date 2020/10/3
- * @brief easy 数组中只出现过一次的数字
+/**
+ * @date 2023/10/14
+ * @author 2mu
+ * @brief easy 指出现过一次的数字 
+ *
+ * 1. 异或
+ * 数字a==b, 则a ^ b = 0; 利用这条性质, 非常容易就可以找出只出现过一次的数字;
+ * 异或运算有3个性质:
+ *  a. 任何数字x与0做异或运算, 结果都是x
+ *  b. 同一个数字x, 与自身做异或运算, 结果是0
+ *  c. 异或运算满足结合律, 交换律;
  * 
- * 1.异或
- * 利用异或的性质，0和任何一个数异或这个数本身，两个相同的数异或为0
- * 就是说数组中相同的数全部异或到一起的话，最后都会成为0，只有出现一次的那个数留下来了
-********************************************************************************************/
+ * 时间复杂度: O(1)
+ * 空间复杂度: O(1)
+ */
+
 #include <iostream>
 #include <vector>
+#include <string>
+
 using namespace std;
 
-int singleNumber(vector<int>& nums) {
-    int ans = 0;
-    for(size_t i = 0; i < nums.size(); i++)
+int singleNumber(vector<int> &nums)
+{
+    int ans = nums.front();
+    for(size_t i = 1; i < nums.size(); ++i)
     {
         ans ^= nums[i];
     }
@@ -22,7 +32,7 @@ int singleNumber(vector<int>& nums) {
 
 int main()
 {
-    vector<int> arr{1,2,4,4,2};
-    cout << singleNumber(arr) << endl;
+    std::vector<int> vct{1, 1, 3, 3, 2};
+    std::cout << singleNumber(vct) << std::endl;
     return 0;
 }
