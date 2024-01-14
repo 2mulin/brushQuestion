@@ -1,27 +1,53 @@
-/*****************************************
- * @author reddragon
- * @date 2021/3/26
- * @brief easy 链表去重
+/**
+ * @date 2023/1/14
+ * @author 2mu
+ * @brief easy 删除排序链表的重复元素
+ *
+ * 1. 遍历
+ * 遍历一遍即可, 因为题目说了链表已经排序好了, 那么重复元素一定是连续的, 所以很好删除;
+ * 维护两个指针, 分别表示上一个元素, 当前元素; 只要当前元素和上一个元素相等, 那么当前元素即可删除;
  * 
- * 1. 一次遍历
- * 去重, 每个数字只出现一次
- * 先给链表加个头结点-1(好习惯, 防止头结点被删除)
- * 每次判断相邻的两个结点的val是否相等, 如果相等
- * 那就删除后面的那个结点.
- * 时间复杂度: O(N)     空间复杂度: O(1)
-******************************************/
+ * 操作之前给链表加个头节点是否有必要? 实际上看自己的理解, 这里没啥必要....
+ * 
+ * 时间复杂度: O(n)
+ * 空间复杂度: O(1)
+ */
 
 #include <iostream>
 using namespace std;
 
-struct ListNode
-{
+struct ListNode {
     int val;
     ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
-// 二刷
+// 三刷
+ListNode *deleteDuplicates(ListNode *head)
+{
+    if(!head)
+        return head;
+
+    ListNode* prev = head, *curr = head->next;
+    while(curr)
+    {
+        if(curr->val == prev->val)
+        {
+            prev->next = curr->next;
+            // delete curr;
+        }
+        else
+        {
+            prev = curr;
+        }
+        curr = prev->next;
+    }
+    return head;
+}
+
+/* 二刷
 ListNode *deleteDuplicates(ListNode *head)
 {
     ListNode *prevHead = new ListNode(-1);
@@ -41,6 +67,7 @@ ListNode *deleteDuplicates(ListNode *head)
     }
     return prevHead->next;
 }
+*/
 
 /* 一刷
 ListNode *deleteDuplicates(ListNode *head)
@@ -64,16 +91,5 @@ ListNode *deleteDuplicates(ListNode *head)
 
 int main()
 {
-    ListNode head(1);
-    head.next = new ListNode(2);
-    head.next->next = new ListNode(2);
-
-    ListNode *p = deleteDuplicates(&head);
-    while (p)
-    {
-        cout << p->val << '\t';
-        p = p->next;
-    }
-
     return 0;
 }
