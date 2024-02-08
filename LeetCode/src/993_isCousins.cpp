@@ -1,22 +1,29 @@
-/*
- * @author ling
- * @date 2021/5/17
- * @brief easy 二叉树的堂兄弟结点
- * 1. 深搜
- * 深度优先遍历去找到x和y的深度和父节点,记录下来, 最后比较
- * 时间复杂度： O(N)        空间复杂度：O(N)
+/**
+ * @date 2024/2/8
+ * @author 2mu
+ * @brief easy 二叉树的堂兄弟节点
  * 
- * 2. 广搜
- * 每一层比较一次,只看父节点是否相同
- * 时间复杂度： O(N)        空间复杂度：O(N)
+ * 1. 层次遍历
+ * 
+ * 首先明确只是一个二叉树, 所以只有左右孩子; 题目保证每个结点的val的唯一;
+ * 不好处理的是, TreeNode结构没有父节点; 
+ * 
+ * 使用层次遍历, 使用队列保存下一层的所有结点, 同时使用整形变量记录一层的节点数量;
+ * 遍历当前层节点的途中, 顺便判断x,y是否出现过在下一层节点; 同时记录x,y的父亲节点;
+ * 
+ * 每遍历完一层之后, 判断: 如果出现在同一个父亲的左右孩子, 直接返回false; 否则如果同时出现过, 返回true;
+ * 如果只出现了x,y的其中一个, 表示没有x,y不在同一层, 也返回false;
+ * 
+ * 时间复杂度：O(n)
+ * 空间复杂度：O(n)
  */
 
 #include <iostream>
 #include <queue>
+
 using namespace std;
 
-struct TreeNode
-{
+struct TreeNode {
     int val;
     TreeNode *left;
     TreeNode *right;
@@ -25,46 +32,55 @@ struct TreeNode
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
-// 广搜
 bool isCousins(TreeNode *root, int x, int y)
 {
-    queue<TreeNode *> qu;
-    if (root == nullptr)
-        return false;
-    qu.push(root);
-    while (!qu.empty())
-    { // 层次遍历
-        int size = qu.size();
-        TreeNode *parentX = nullptr, *parentY = nullptr;
-        for (int i = 0; i < size; ++i)
+    std::queue<TreeNode*> que;
+    if(root)
+        que.push(root);
+    
+    int level_node_count = 1;
+    TreeNode* x_node_parent = NULL;
+    TreeNode* y_node_parent = NULL;
+    while(!que.empty())
+    {
+        TreeNode* node = que.front();
+        que.pop();
+        --level_node_count;
+
+        if(node->left)
         {
-            TreeNode *node = qu.front();
-            qu.pop();
-            if (node->left)
-            {
-                int val = node->left->val;
-                if (val == x)
-                    parentX = node;
-                if (val == y)
-                    parentY = node;
-                qu.push(node->left);
-            }
-            if (node->right)
-            {
-                int val = node->right->val;
-                if (val == x)
-                    parentX = node;
-                if (val == y)
-                    parentY = node;
-                qu.push(node->right);
-            }
+            que.push(node->left);
+            if(node->left->val == x)
+                x_node_parent = node;
+            if(node->left->val == y)
+                y_node_parent = node;
         }
-        if (parentX == nullptr && parentY == nullptr)
-            continue;
-        if (parentX && parentY && parentX != parentY)
-            return true;
-        else
-            return false;
+        if(node->right)
+        {
+            que.push(node->right);
+            if(node->right->val == x)
+                x_node_parent = node;
+            if(node->right->val == y)
+                y_node_parent = node;
+        }
+
+        if(level_node_count == 0)
+        {
+            if(x_node_parent && y_node_parent)
+            {
+                if(x_node_parent != y_node_parent)
+                    return true;
+                else
+                    return false;
+            }
+            else if(x_node_parent || y_node_parent)
+            {
+                // 只有一个节点在下一层, 另外节点不在同一层, 绝对不可能满足条件, 直接返回false;
+                return false;
+            }
+            
+            level_node_count = que.size();
+        }
     }
     return false;
 }
@@ -72,10 +88,9 @@ bool isCousins(TreeNode *root, int x, int y)
 int main()
 {
     TreeNode *root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    root->left->right = new TreeNode(4);
-    root->right->right = new TreeNode(5);
-    isCousins(root, 4, 5);
+    root->left = new TreeNode(2, NULL, new TreeNode(4));
+    root->right = new TreeNode(3, NULL, new TreeNode(5));
+
+    std::cout << isCousins(root, 4, 5) << std::endl;
     return 0;
 }
