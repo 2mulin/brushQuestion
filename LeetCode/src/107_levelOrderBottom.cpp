@@ -1,10 +1,14 @@
-/*******************************************************************************************
- * @author reddragon
- * @date 2020/8/31
- * @brief easy 树的层次遍历
- * 将层次遍历反转一下就OK了
- * 时间复杂度：O(N)     空间复杂度：O(N)
- ******************************************************************************************/
+/**
+ * @date    2024/2/15
+ * @author  2mu
+ * @brief   medium 二叉树的前序遍历
+ * 
+ * 1. 利用队列
+ * 利用层次遍历, 然后将结果反转一下就OK了
+ * 
+ * 时间复杂度：O(n)
+ * 空间复杂度：O(n)
+ */
 #include <iostream>
 #include <algorithm>
 #include <queue>
@@ -45,6 +49,7 @@ vector<vector<int>> levelOrderBottom(TreeNode *root)
     reverse(ans.begin(),ans.end());
     return ans;
 }
+
 
 int main()
 {
