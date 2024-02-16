@@ -1,17 +1,24 @@
-/*******************************************************************************************
- * @author reddragon
- * @date 2020/8/29
- * @brief medium 树的锯齿状遍历
- * 1. 直接层次遍历，每一层单独拎出来判断，是否需要reverse。达到锯齿状的效果。
- * 时间复杂度:O(N)         空间复杂度:O(N)
+/**
+ * @date 2024/2/16
+ * @author 2mu
+ * @brief medium 二叉树的锯齿形层序遍历
+ *
+ * 1. 利用队列
+ * 利用队列进行层次遍历; 使用一个数组记录每一层的节点, 在额外使用一个变量表示当前层是否需要反转以
+ * 达到z字形的效果;
  * 
- * 2. 利用deque,可以直接往尾部添加，或者往头部添加，我觉得有点问题。
- * 就像是[1,2,3,4,null,null,5]这种树。
- *******************************************************************************************/
+ * 时间复杂度: O(n)
+ * 空间复杂度: O(n)
+ */
+
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <queue>
+
+
 using namespace std;
+
 
 struct TreeNode
 {
@@ -21,35 +28,38 @@ struct TreeNode
     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
+
 vector<vector<int>> zigzagLevelOrder(TreeNode *root)
 {
-    bool flag = false;
-    queue<TreeNode *> qu;
-    vector<vector<int>> ans;
-    if (root)
-        qu.push(root);
-    while (!qu.empty())
+    std::vector<std::vector<int> > result;
+    std::queue<TreeNode*> que;
+    if(root)
+        que.push(root);
+    bool zip = false;
+    while(!que.empty())
     {
-        size_t len = qu.size();
-        vector<int> temp(len);
-        for (size_t i = 0; i < len; i++)
+        // for循环写在里面吧, 逻辑清晰些, 也不会增加时间复杂度
+        std::vector<int> values;
+        int sz = que.size();
+        while(sz--)
         {
-            TreeNode *p = qu.front();
-            qu.pop();
-            temp[i] = p->val;
-            if (p->left)
-                qu.push(p->left);
-            if (p->right)
-                qu.push(p->right);
+            TreeNode* node = que.front();
+            que.pop();
+            
+            values.push_back(node->val);
+            if(node->left)
+                que.push(node->left);
+            if(node->right)
+                que.push(node->right);
         }
-        // 翻转
-        if (flag)
-            reverse(temp.begin(), temp.end());
-        flag = !flag;
-        ans.push_back(temp);
+        if(zip)
+            std::reverse(values.begin(), values.end());
+        zip = !zip;
+        result.push_back(values);
     }
-    return ans;
+    return result;
 }
+
 
 int main()
 {
