@@ -1,20 +1,23 @@
 /**
- * @author ling
- * @date 2021/4/8
+ * @date 2023/2/17
+ * @author 2mu
  * @brief medium N叉树的层次遍历
  *
- * 1. 广度优先搜索
- * 利用queue记录下来每一层的所有孩子节点。
+ * 1. 队列
  * 
- * 时间复杂度: O(N)         空间复杂度: O(N)
+ * 利用queue记录下来每一层的所有孩子节点; 最后统一输出;
+ * 
+ * 时间复杂度: O(n)
+ * 空间复杂度: O(n)
  */
 
 #include <iostream>
 #include <vector>
 #include <queue>
 
-using std::vector;
-using std::queue;
+
+using namespace std;
+
 
 class Node {
 public:
@@ -33,31 +36,31 @@ public:
     }
 };
 
-vector<vector<int>> levelOrder(Node* root) 
+
+vector<vector<int>> levelOrder(Node *root)
 {
-    std::vector<std::vector<int>> ans;
-    if(!root)
-        return ans;
+    std::vector<std::vector<int>> results;
     std::queue<Node*> que;
-    que.push(root);
+    if(root)
+        que.push(root);
     while(!que.empty())
     {
-        int count = que.size(); // 同一层的节点数量
-        std::vector<int> nums;
-        for(int i = 0; i < count; ++i)
+        int level_node_count = que.size();
+        std::vector<int> level_node;
+        while(level_node_count--)
         {
-            Node* p = que.front();
+            Node* node = que.front();
             que.pop();
-            nums.push_back(p->val);
-            for(auto iter = p->children.begin(); iter != p->children.end(); ++iter)
-            {
-                que.push(*iter);
-            }
+            level_node.push_back(node->val);
+
+            for(Node* children : node->children)
+                que.push(children);
         }
-        ans.push_back(nums);
+        results.push_back(level_node);
     }
-    return ans;
+    return results;
 }
+
 
 int main()
 {
