@@ -1,47 +1,59 @@
 /**
- * @author ling
- * @date 2021/3/26
+ * @date 2024/7/29
+ * @author 2mu
  * @brief easy 棒球比赛
  *
- * 1. stack
- * 利用vector模拟栈。主要原因是“D”的操作，需要访问最后两个元素。而stack只能访问最后一个元素。
- * 时间复杂度：O(N)          空间复杂度: O(N)
+ * 1. 模拟
+ * 按照规则模拟即可，因为可以取消上次成绩，所以需要额外创建数组记录每次的得分。
+ * 防止被取消多次。
+ * 
+ * 时间复杂度: O(n)
+ * 空间复杂度: O(n)
  */
 
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
-int calPoints(std::vector<std::string> &ops)
+using namespace std;
+
+int calPoints(vector<string> &operations)
 {
-    std::vector<std::string> st;
-    for(auto str : ops)
+    int result = 0;
+    std::vector<int> scores;
+    int current_score = 0;
+    for(const std::string& operation : operations)
     {
-        if(str == "C")
-            st.pop_back();
-        else if(str == "D")
+        if(operation == "+")
         {
-            int num = std::stoi(st.back()) * 2;
-            st.push_back(std::to_string(num));
+            int len = scores.size();
+            current_score = scores.back() + scores.at(len - 2);
         }
-        else if(str == "+")
+        else if(operation == "D")
         {
-            int num = std::stoi(st.back());
-            num += std::stoi(st[st.size() - 2]);
-            st.push_back(std::to_string(num));
+            current_score = scores.back() * 2;
+        }
+        else if(operation == "C")
+        {
+            result -= scores.back();
+            scores.pop_back();
+            continue;
         }
         else
-            st.push_back(str);
+        {
+            current_score = stoi(operation);
+        }
+
+        result += current_score;
+        scores.push_back(current_score);
     }
-    int ans = 0;
-    for(auto str : st)
-        ans += std::stoi(str);
-    return ans;
+    return result;
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    std::vector<std::string> arr{"5","2","C","D","+"};
-    std::cout << calPoints(arr) << std::endl;
+    std::vector<std::string> operations{"5","2","C","D","+"};
+    std::cout << calPoints(operations) << std::endl;
     return 0;
 }
+
