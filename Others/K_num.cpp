@@ -1,26 +1,35 @@
-/********************************************************************************************
- * @author reddragon
- * @date 2020/11/18
+/**
+ * @author mulin
+ * @date 2024/8/1
  * @brief easy 前K个数
  * 
- * 1. 堆排序
- * 可以直接排序（降序），然后输出前K个数。
- * 但是没有必要，建立一个大根堆，每次输出最大的，然后恢复大根堆。
- * 循环K次就可以了
+ * 1. 堆
+ * 固定堆的大小K, 注意初始化是一个**大顶堆**;
+ * 遍历数组, 假设遍历到数字num, 如果当前堆还没满, 直接将num加入堆中; 否则 num和堆顶元素进行判断;
+ * 如果 num < 堆顶元素, 那么删除堆顶元素, 使用num替代, 做一次下滤;
  * 
- * 时间复杂度：O(N+KlogN)        空间复杂度：O(1)
- * 建堆时间复杂度：O(N)  删除堆顶，并恢复：O(logN),删除K次，所以是  O(KlogN)
+ * 遍历完所有元素之后, 最小的K个数字就在数组中了;
+ * 
+ * 时间复杂度: O(nlogn)
+ * 空间复杂度: O(k)
  * 
  * 2. 快速排序
- * 快排每次可以确定一个数位置pos，看该pos和K差多少，然后缩小查找区间，
- * 直到pos == K，输出
+ * 快排每次可以确定一个数字的位置, 假设该位置是P; 如果数组idx从0开始; 那么位置P的数字就是第 P+1 大的元素;
+ * 因为 位置P 左边的元素都 <= 它, 右边的元素都 >= 它;
  * 
- * 数组最多分K次，就可以找到第K大的数
- * 时间复杂度: O(NlogK)         空间复杂度：O(N)
- ********************************************************************************************/
+ * 此时可以通过 P+1 和 K比较, P+1 < K, 缩小快排范围到[P+1, K]; 若是P+1 > K, 缩小范围到[0, P]
+ * 直到确认K+1位置的元素是多少; 其它位置的元素同理;
+ * 
+ * 时间复杂度: O(nlogn), 最快情况下是 O(n*n)
+ * 空间复杂度: O(n)
+ */
+
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <algorithm>
+
+
 using namespace std;
 
 /* 快排的思路
@@ -49,50 +58,30 @@ int findKth(vector<int> a, int n, int K)
     else
         return a[pos];
 }
- */
-void down(vector<int> &arr, int n, int pos)
-{
-    while (pos <= n / 2 - 1)
-    {
-        int left = pos * 2 + 1;
-        int right = pos * 2 + 2;
-        int maxPos = pos;
-        if (left < n && arr[left] > arr[maxPos])
-            maxPos = left;
-        if (right < n && arr[right] > arr[maxPos])
-            maxPos = right;
-        swap(arr[pos], arr[maxPos]);
-        // 不会再下滤了
-        if (pos == maxPos)
-            break;
-        else
-            pos = maxPos;
-    }
-    return;
-}
+*/
 
-int findKth(vector<int> a, int n, int K)
+int findKth(vector<int> nums, int n, int K)
 {
-    // 从下往上做一次下滤
-    int pos = n / 2 - 1; // 最后一个非叶子节点
-    while (pos >= 0)
+    std::priority_queue<int> heap;
+    for(int i = 0; i < nums.size(); ++i)
     {
-        // 下滤操作
-        down(a, n, pos);
-        --pos;
+        if (heap.size() < K)
+            heap.push(nums[i]);
+        else
+        {
+            if(heap.top() > nums[i])
+            {
+                heap.pop();
+                heap.push(nums[i]);
+            }
+        }
     }
-    for (int i = 1; i < K; ++i)
-    {
-        swap(a[0], a[n - 1]);
-        --n;
-        down(a, n, 0);
-    }
-    return a[0];
+    return heap.top();
 }
 
 int main()
 {
-    vector<int> arr{1,2,3,4,5};
+    vector<int> arr{1, 2, 3, 100, 7, 8, 4, 5};
     cout << findKth(arr, 5, 3) << endl;
     return 0;
 }
