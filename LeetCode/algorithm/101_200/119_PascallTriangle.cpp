@@ -1,57 +1,51 @@
-/*******************************************************************************************
- * @author reddragon
- * @date 2020/9/15
+/**
+ * @date 2025/1/28
+ * @author 2mu 
  * @brief easy 杨辉三角II
  * 
  * 1. 模拟
- * 就是模拟杨辉三角, 每次上面左右两个数字之和就是当前值
- * 时间复杂度: O(n*n)      空间复杂度: O(n*n)
+ * 要求返回杨辉三角的第rowIndex行
+ * 直接模拟，从第一行开始，到rowIndex就输出？
  * 
- * 2. 滚动数组
- * 逆向思维, 首先发现从后往前加比较好, 
- * 时间复杂度: O(N*N)      空间复杂度: O(n)
-*******************************************************************************************/
+ * 使用两个vector模拟下
+ * 
+ * 时间复杂度：O(n*n)  空间复杂度：O(n)
+ * 
+ * 2. 题解
+ * 第1个是普通的模拟可以使用滚动数组优化空间复杂度。第2个是使用数学递推，可以直接得到第n行两个相邻数字的关系。
+ */
+
 #include <iostream>
 #include <vector>
-#include <algorithm>
+
 using namespace std;
 
-// 滚动数组实现
+
 vector<int> getRow(int rowIndex)
 {
-    vector<int> ret(rowIndex + 1, 0);
-    ret[0] = 1;
-    for (int i = 1; i <= rowIndex; ++i)
+    std::vector<int> result = {1};
+    int idx = 0;
+    while(idx < rowIndex)
     {
-        for (int j = i; j > 0; --j)
+        int len = result.size();
+        std::vector<int> tmp(len + 1, 1);
+        for(int i = 1; i < len; ++i)
         {
-            ret[j] = ret[j] + ret[j - 1];
+            tmp[i] = result[i - 1] + result[i];
         }
+        ++idx;
+        result = tmp;
     }
-    return ret;
+    return result;
 }
-
-// vector<int> getRow(int rowIndex)
-// {
-//     vector<vector<int>> arr;
-//     vector<int> ans;
-
-//     vector<int> one(1, 1);
-//     arr.push_back(one);
-//     for (int i = 1; i < rowIndex + 1; i++)
-//     {
-//         vector<int> temp(i + 1);
-//         temp[0] = arr[i - 1][0];
-//         temp[i] = arr[i - 1][i - 1];
-//         for (int j = 1; j < i; j++)
-//             temp[j] = arr[i - 1][j] + arr[i - 1][j - 1];
-//         arr.push_back(temp);
-//     }
-//     return arr[rowIndex];
-// }
 
 int main()
 {
-
+    std::vector<int> result = getRow(3);
+    for(auto num : result)
+    {
+        std::cout << num << '\t';
+    }
+    std::cout << std::endl;
     return 0;
 }
