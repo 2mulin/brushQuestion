@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+
 using namespace std;
+
 
 struct TreeNode
 {
@@ -11,39 +13,41 @@ struct TreeNode
     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
-/*
-迭代版最简洁最短的中序遍历。
-看不懂就跟着做一遍
-*/
-vector<int> travIn(TreeNode *pRoot)
+
+/**
+ * @brief 二叉树中序遍历非递归版本, 使用stack即可模拟整个递归过程; 非常棒
+ * @param pRoot 二叉树的root节点
+ * @return 中序遍历结果
+ */
+vector<int> in_order_traversal(TreeNode *pRoot)
 {
-    vector<int> vec;
-    //OrderTraverse
-    stack<TreeNode *> s;
-    TreeNode *p = pRoot;
-    // 注意p可以是NULL值，没事的，不影响遍历
+    vector<int> result;
+
+    stack<TreeNode*> st;
+    // ptr可以为NULL
     while (true)
     {
         // 到达左侧链最下面
-        if (p)
+        if (pRoot)
         {
-            s.push(p);
-            p = p->left;
+            st.push(pRoot);
+            pRoot = pRoot->left;
         }
-        // 左转
-        else if (!s.empty())
+        else if (!st.empty())
         {
-            p = s.top();
-            s.pop();
-            vec.push_back(p->val);
-            p = p->right;
+            pRoot = st.top();
+            st.pop();
+            // 注意: 这里是唯一访问节点数据的位置
+            result.push_back(pRoot->val);
+            // 右转
+            pRoot = pRoot->right;
         }
-        // 退出循环
         else
-            break;
+            break;// st已经空了, 直接退出
     }
-    return vec;
+    return result;
 }
+
 
 int main()
 {
