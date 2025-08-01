@@ -1,36 +1,54 @@
-/*******************************************************************************************
- * @author reddragon
- * @date 2020/9/14
+/**
+ * @date 2025/8/1
+ * @author 2mu
  * @brief easy 杨辉三角
- * 1. 好像挺简单的
-*******************************************************************************************/
+ *
+ * 1. 遍历
+ * 时隔5年的二刷
+ * 
+ * 按照题目要求简单分析，然后就可以发现遍历一遍即可得到答案。
+ * 主要是边界条件的分析。
+ * 
+ * 时间复杂度：O(n)
+ * 空间复杂度：O(1)
+ */
+
 #include <iostream>
-#include <algorithm>
-#include <queue>
+#include <vector>
 
 using namespace std;
 
+
 vector<vector<int>> generate(int numRows)
 {
-    vector<vector<int>> ans;
-    if (numRows <= 0)
-        return ans;
-    vector<int> one(1, 1);
-    ans.push_back(one);
-    for (int i = 1; i < numRows; i++)
+    std::vector<std::vector<int>> result;
+    result.push_back({1});
+    while(--numRows)
     {
-        vector<int> temp(i + 1);
-        temp[0] = ans[i - 1][0];
-        temp[i] = ans[i - 1][i - 1];
-        for (int j = 1; j < i; j++)
-            temp[j] = ans[i - 1][j] + ans[i - 1][j - 1];
-        ans.push_back(temp);
+        std::vector<int> arr = result.back();
+        std::vector<int> temp(arr.size() + 1, 0);
+        for(int i = 0; i < arr.size(); ++i)
+        {
+            if (i - 1 >= 0)
+                temp[i] = arr[i - 1] + arr[i];
+            else
+                temp[i] = arr[i];
+        }
+        temp.back() = 1;
+        result.push_back(temp);
     }
-    return ans;
+    return result;
 }
+
 
 int main()
 {
-
+    auto result = generate(5);
+    for(auto vec : result)
+    {
+        for(auto num : vec)
+            std::cout << num;
+        std::cout << std::endl;
+    }
     return 0;
 }
